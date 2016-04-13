@@ -9,7 +9,7 @@ import zipfile
 
 os.chdir(#your base directory)
 
-html = open(#file containing html source code of http://cs50.tv/2015/fall/,"rb")
+html = open(#file containing 	html source code of http://cs50.tv/2015/fall/,"rb")
 try:
 	cs50_soup = bs4.BeautifulSoup(html.read(),"lxml")
 except:

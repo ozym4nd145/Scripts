@@ -1,6 +1,6 @@
 #!/usr/bin/python2.7
 
-import requests,sys,os,bs4
+import requests,sys,os,bs4,json
 
 def get_manga(url,chapter):
 	try:
@@ -10,12 +10,12 @@ def get_manga(url,chapter):
 	except:
 		print "Unable to open page - " + url
 		print "Exiting"
-		sys.exit()
+		return False
 
 	manga_links = manga_page.select("tr td a")
 	if len(manga_links) == 0:
 		print "Page structure changed! Rewrite the program!"
-		sys.exit()
+		return False
 
 	chapters = {}
 
@@ -27,7 +27,7 @@ def get_manga(url,chapter):
 		manga_link = chapters[chapter]
 	except:
 		print "Manga not yet out! :("
-		sys.exit()
+		return False
 
 
 	path = "/media/500_GB/Manga/One_Piece/"+chapter
@@ -54,7 +54,7 @@ def get_manga(url,chapter):
 				iteration = 0
 			else:
 				print "Exiting"
-				sys.exit()
+				return False
 
 		manga_http = requests.get(manga_link)
 		manga_http.raise_for_status()
@@ -70,7 +70,7 @@ def get_manga(url,chapter):
 				continue
 			else:
 				print "Exiting"
-				sys.exit()
+				return False
 
 		page_name = "{0:0>3d}.".format(iteration)+os.path.basename(image_link).split(".")[-1]
 		print page_name
@@ -82,6 +82,17 @@ def get_manga(url,chapter):
 if __name__=="__main__":
 	url = "http://mangastream.com/manga/one_piece"
 	if len(sys.argv) == 1:
-		print "Usage: {0} <chapter number>".format(sys.argv[0])
-		sys.exit()
-	get_manga(url,sys.argv[1])
+		try:
+			info_file = open("/media/500_GB/Manga/One_Piece/.info.json","r")
+			info = json.loads(info_file.read())
+			info_file.close()
+			while get_manga(url,info['last']+1):
+				info['last'] +=1
+				info['chapters'].append(info['last'])
+			info_file = open("/media/500_GB/Manga/One_Piece/.info.json","w")
+			info_file.write(json.dumps(info))
+			info_file.close()
+		except:
+			print "info file not found!"
+	else:
+		get_manga(url,sys.argv[1])
