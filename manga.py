@@ -1,5 +1,5 @@
 #!/usr/bin/python2.7
-
+import traceback
 import requests,sys,os,bs4,json
 
 def get_manga(url,chapter):
@@ -26,7 +26,7 @@ def get_manga(url,chapter):
 	try:
 		manga_link = chapters[chapter]
 	except:
-		print "Manga not yet out! :("
+		print "Chapter-{} not yet out! :(".format(chapter)
 		return False
 
 
@@ -45,7 +45,7 @@ def get_manga(url,chapter):
 		url_parts = manga_link.split("/")
 		if url_parts[-1] == 'end' or url_parts[-3] != chapter:
 			print "Done!"
-			sys.exit()
+			return True;
 		iteration+=1
 		if iteration%30 == 0:
 			confirmation = raw_input("The manga"+chapter+"seems to be greater than "+ iteration+" pages. Do you want to continue? (y/n)").lower()
@@ -86,13 +86,13 @@ if __name__=="__main__":
 			info_file = open("/media/500_GB/Manga/One_Piece/.info.json","r")
 			info = json.loads(info_file.read())
 			info_file.close()
-			while get_manga(url,info['last']+1):
+			while get_manga(url,str(info['last']+1)):
 				info['last'] +=1
 				info['chapters'].append(info['last'])
 			info_file = open("/media/500_GB/Manga/One_Piece/.info.json","w")
 			info_file.write(json.dumps(info))
 			info_file.close()
-		except:
+		except Exception as e:
 			print "info file not found!"
 	else:
 		get_manga(url,sys.argv[1])
