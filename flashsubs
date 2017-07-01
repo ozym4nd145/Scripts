@@ -1,0 +1,7 @@
+#! /bin/bash
+
+if [ "$1" == "install" ]; then
+	sudo pip install -r Requirements.txt
+else
+	python ~/Coding/Project/FlashSubs/__main__.py $@
+fi
