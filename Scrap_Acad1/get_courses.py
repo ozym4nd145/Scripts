@@ -5,9 +5,10 @@ import os
 with open("./course_db.json", "r") as fl:
     course_list = json.loads(fl.read())
 
+#curl 'https://academics1.iitd.ac.in/Academics/GenerateExcel.php?page=excel&secret=07d5ba2560b6586a955ec6153ec85ac0a07534d7&uname=2015CS10262' -H 'Cookie: _ga=GA1.3.1716513787.1485603351' -H 'Origin: https://academics1.iitd.ac.in' -H 'Accept-Encoding: gzip, deflate, br' -H 'Accept-Language: en-US,en;q=0.8,hi;q=0.6' -H 'Upgrade-Insecure-Requests: 1' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: https://academics1.iitd.ac.in/Academics/index.php?page=ListCourseN&secret=fc93f3c5a0584122f7339d6e19a3b45d05fbc051&uname=2015CS10262' -H 'Connection: keep-alive' -H 'DNT: 1' --data 'submit=Download+Data+in+CSV+File&EntryNumber=COL100&UserID=2015CS10262' --compressed
+
 cookies = {
     '_ga': 'GA1.3.1716513787.1485603351',
-    'SESS1f002926bf876664ed5383994cb4c1de': 'XXXXXXXXXXXXXXXXXXXXXXXXXX',
 }
 
 headers = {
@@ -19,15 +20,15 @@ headers = {
     'Content-Type': 'application/x-www-form-urlencoded',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Cache-Control': 'max-age=0',
-    'Referer': 'https://academics1.iitd.ac.in/Academics/index.php?page=ListCourseN&secret=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&uname=XXXXXXXXXXX',
+    'Referer': 'https://academics1.iitd.ac.in/Academics/index.php?page=ListCourseN&secret=fc93f3c5a0584122f7339d6e19a3b45d05fbc051&uname=2015CS10262',
     'Connection': 'keep-alive',
     'DNT': '1',
 }
 
 params = (
     ('page', 'excel'),
-    ('secret', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'),
-    ('uname', 'XXXXXXXXXXX'),
+    ('secret', '07d5ba2560b6586a955ec6153ec85ac0a07534d7'),
+    ('uname', '2015CS10262')
 )
 
 data = {
@@ -52,6 +53,8 @@ for course in course_list:
 course_codes = list(set([x["code"].upper() for x in course_list]))
 course_codes.sort()
 
+def clean_string(s):
+    return " ".join(s.upper().split())
 for idx,code in enumerate(course_codes):
     print("processing course: %s , %d of %d" %(code,idx+1,len(course_codes)))
     try:
@@ -64,9 +67,9 @@ for idx,code in enumerate(course_codes):
             with open(os.path.join(CSV_DIR, code + ".csv"), "w") as fl:
                 fl.write(csv_content)
             student_data = csv_content.splitlines()[4:]
-            student_data = [d.split(',') for d in student_data]
-            data_json = [{"name": d[2].upper(), "entry":d[1].upper(), "group":d[3].upper(),
-                         "audit_withdraw":d[4].upper(), "slot":d[5].upper()} for d in student_data]
+            student_data = [[clean_string(p) for p in d.split(',')] for d in student_data]
+            data_json = [{"name": d[2], "entry":d[1], "group":d[3],
+                         "audit_withdraw":d[4], "slot":d[5]} for d in student_data]
             for student in data_json:
                 courses[code][student["slot"]]["students"].append(student)
             for student in data_json:
