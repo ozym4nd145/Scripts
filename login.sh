@@ -14,7 +14,8 @@ read -sp "Enter your password: " password
 echo
 read -p "Enter your proxy category: " category
 rm -f $LOG
-nohup python login_terminal.py $username $password $category &> $LOG &
+export password=$password
+nohup python login_terminal.py $username $category &> $LOG &
 sleep 5
 echo $(head -n2 $LOG)
 addr=`python -c "import login_terminal;login_terminal.Proxy.get_proxy_address('$category')"`
