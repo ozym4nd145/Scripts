@@ -5,7 +5,7 @@
     #synclient TouchpadOff=0 ;
 #fi
 id="$(xinput | grep "Touchscreen"| grep -oP 'id=([0-9]*)' | sed 's/id=//')"
-if xinput list-props $id | grep "Device Enabled (136):.*1" >/dev/null
+if xinput list-props $id | grep "Device Enabled (153):.*1" >/dev/null
 then
   xinput disable $id
   notify-send -u low -i mouse "Touchscreen disabled"

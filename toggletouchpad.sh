@@ -4,8 +4,8 @@
 #else
     #synclient TouchpadOff=0 ;
 #fi
-id="$(xinput | grep "DLL06"| grep -oP 'id=([0-9]*)' | sed 's/id=//')"
-if xinput list-props $id | grep "Device Enabled (136):.*1" >/dev/null
+id="$(xinput | grep "Synaptics"| grep -oP 'id=([0-9]*)' | sed 's/id=//')"
+if xinput list-props $id | grep "Device Enabled (153):.*1" >/dev/null
 then
   xinput disable $id
   notify-send -u low -i mouse "Trackpad disabled"
