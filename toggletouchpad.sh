@@ -8,8 +8,8 @@ id="$(xinput | grep "Synaptics"| grep -oP 'id=([0-9]*)' | sed 's/id=//')"
 if xinput list-props $id | grep "Device Enabled (153):.*1" >/dev/null
 then
   xinput disable $id
-  notify-send -u low -i mouse "Trackpad disabled"
+  notify-send "Trackpad disabled"
 else
   xinput enable $id
-  notify-send -u low -i mouse "Trackpad enabled"
+  notify-send "Trackpad enabled"
 fi
