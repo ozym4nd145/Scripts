@@ -5,7 +5,8 @@ set -e # fail on non zero return
 DEST="/data/andromeda"
 COMMAND="rsync -avz"
 
-declare -a dotPaths=(".bashrc" ".vimrc" ".tmux.conf" ".config" ".gitconfig" ".dircolors" ".fzf" ".fzf.bash" ".gnupg" ".bash_eternal_history" ".bash_history" ".profile" ".ssh" ".vim")
+crontab -l > "${HOME}"/.crontab.bak
+declare -a dotPaths=(".bashrc" ".vimrc" ".tmux.conf" ".config" ".gitconfig" ".dircolors" ".fzf" ".fzf.bash" ".gnupg" ".bash_eternal_history" ".bash_history" ".profile" ".ssh" ".vim" ".crontab.bak")
 declare -a homePaths=("bin" "man" "letsencrypt")
 declare -a otherPaths=()
 
