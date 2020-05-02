@@ -3,19 +3,16 @@ set -o nounset # no undeclared variable use
 set -e # fail on non zero return
 
 DEST="/data/andromeda"
-COMMAND="rsync -avz"
+COMMAND="rsync -rluptzzvP --delete --exclude '__pycache__' --exclude '*.pyc' --exclude '.git' --exclude '*.o' --exclude 'node_modules' --ignore-missing-args --max-size='100M' --filter=':- .gitignore'"
 
 crontab -l > "${HOME}"/.crontab.bak
 declare -a dotPaths=(".bashrc" ".vimrc" ".tmux.conf" ".config" ".gitconfig" ".dircolors" ".fzf" ".fzf.bash" ".gnupg" ".bash_eternal_history" ".bash_history" ".profile" ".ssh" ".vim" ".crontab.bak")
-declare -a homePaths=("bin" "man" "letsencrypt")
+declare -a homePaths=("bin" "man" "logs" "secrets" "docker-services")
 declare -a otherPaths=()
 
-for p in "${dotPaths[@]}"; do
-  eval ${COMMAND} ${HOME}/${p} ${DEST}/dotFiles/
-done
-for p in "${homePaths[@]}"; do
-  eval ${COMMAND} ${HOME}/${p} ${DEST}/homeFiles/
-done
-for p in "${otherPaths[@]}"; do
-  eval ${COMMAND} ${p} ${DEST}/otherFiles/
-done
+fullDotPaths=("${dotPaths[@]/#/${HOME}/}")
+fullHomePaths=("${homePaths[@]/#/${HOME}/}")
+
+eval ${COMMAND} "${fullDotPaths[@]}" "${DEST}/dotFiles/"
+eval ${COMMAND} "${fullHomePaths[@]}" "${DEST}/homeFiles/"
+eval ${COMMAND} "${otherPaths[@]}" "${DEST}/otherFiles"
