@@ -6,8 +6,9 @@ echo "-----------------------------------------------------"
 echo "$(date)"
 echo "-----------------------------------------------------"
 
-DEST="/data/andromeda"
-COMMAND="rsync -rluptzzvP --delete --exclude '__pycache__' --exclude '*.pyc' --exclude '.git' --exclude '*.o' --exclude 'node_modules' --ignore-missing-args --max-size='100M' --filter=':- .gitignore'"
+# DEST="/data/andromeda"
+DEST="hippocampus:/volume1/data/andromeda/backup"
+COMMAND="rsync -rluptzvP --delete --exclude '__pycache__' --exclude '*.pyc' --exclude '.git' --exclude '*.o' --exclude 'node_modules' --ignore-missing-args --max-size='100M' --filter=':- .gitignore'"
 
 crontab -l > "${HOME}"/.crontab.bak
 declare -a dotPaths=(".bashrc" ".vimrc" ".tmux.conf" ".config" ".gitconfig" ".dircolors" ".fzf" ".fzf.bash" ".gnupg" ".bash_eternal_history" ".bash_history" ".profile" ".ssh" ".vim" ".crontab.bak")
@@ -19,6 +20,6 @@ fullHomePaths=("${homePaths[@]/#/${HOME}/}")
 
 eval ${COMMAND} "${fullDotPaths[@]}" "${DEST}/dotFiles/"
 eval ${COMMAND} "${fullHomePaths[@]}" "${DEST}/homeFiles/"
-eval ${COMMAND} "${otherPaths[@]}" "${DEST}/otherFiles/"
+# eval ${COMMAND} "${otherPaths[@]}" "${DEST}/otherFiles/"
 
 echo -e "-----------------------------------------------------\n"
